@@ -1,7 +1,7 @@
 #
 #		Delete old files
 #
-rm /Q bootloader.sna ../files/bootloader.sna
+rm bootloader.sna ../files/bootloader.sna
 #
 #		Assemble bootloader
 #

@@ -18,6 +18,7 @@ class ColorForthImage(object):
 		self.pageTable = self.read(0,self.sysInfo+16)+self.read(0,self.sysInfo+17)*256
 		self.forthDictionary = {}
 		self.macroDictionary = {}
+		self.loadDictionary()
 		h.close()
 	#
 	#		Return sys.info address
@@ -117,6 +118,21 @@ class ColorForthImage(object):
 		for k in keys:
 			del dict[keys]
 	#
+	#		Load the dictionary in from the image.
+	#
+	def loadDictionary(self):
+		p = 0xC000
+		dPage = self.dictionaryPage()
+		while self.read(dPage,p) != 0:
+			sByte = self.read(dPage,p+4)
+			name = ""
+			for i in range(0,sByte & 0x3F):
+				name += chr(self.read(dPage,p+5+i))
+			target = self.macroDictionary if (sByte & 0x80) !=0 else self.forthDictionary 
+			target[name] = [name,self.read(dPage,p+1),self.read(dPage,p+2)+self.read(dPage,p+3)*256]
+			#print(p,name,target[name])
+			p = p + self.read(dPage,p)
+	#
 	#		Allocate page of memory to a specific purpose.
 	#
 	def findFreePage(self):
@@ -143,4 +159,5 @@ if __name__ == "__main__":
 	print(len(z.image))
 	print(z.address(z.dictionaryPage(),0xC000))
 	z.save()
-
+	print(z.forthDictionary)
+	print(z.macroDictionary)

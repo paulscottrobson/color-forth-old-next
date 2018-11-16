@@ -22,7 +22,7 @@ DEBUGShowStackBottomLine:
 		ld 		c,e
 		ld 		b,c 								; clear the bottom line.
 __DSSSBLClear:
-		ld 		d,$0220 
+		ld 		de,$0220
 		call 	GFXWriteCharacter
 		inc 	hl
 		djnz 	__DSSSBLClear
@@ -30,7 +30,7 @@ __DSSSBLClear:
 		ld 		ix,$0002 							; copy SP+2 into IX
 		add 	ix,sp
 __DSSShowLoop:
-		ld 		a,(SIExecStackTop) 					; reached Top of execute stack 
+		ld 		a,(SIStack) 						; reached Top of execute stack 
 		cp 		ixl									; (assumes < 256 byte data stack)
 		jr 		z,__DSSExit
 		ld 		a,c 								; is there enough space ?
