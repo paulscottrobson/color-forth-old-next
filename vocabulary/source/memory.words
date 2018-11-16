@@ -1,0 +1,146 @@
+; ***************************************************************************************
+; ***************************************************************************************
+;
+;		Name : 		memory.words
+;		Author :	Paul Robson (paul@robsons.org.uk)
+;		Date : 		15th November 2018
+;		Purpose :	Memory and Hardware access
+;
+; ***************************************************************************************
+; ***************************************************************************************
+
+; @generator.ix @
+		ex 		de,hl
+		ld 		e,(hl)
+		inc 	hl
+		ld 		d,(hl)
+; @end
+
+; *********************************************************************************
+
+; @generator.hl c@
+		ld 		a,(de)
+		ld 		e,a
+		ld 		d,0
+; @end
+
+; *********************************************************************************
+
+; @generator.ix c!
+		pop 	hl
+		ld 		a,l
+		ld 		(de),a
+		pop 	de
+; @end
+
+; *********************************************************************************
+
+; @generator.ix !
+		pop 	hl
+		ld 		(hl),e
+		inc 	hl
+		ld 		(hl),d
+		pop 	de
+; @end
+
+; *********************************************************************************
+
+; @word.ix +!
+		pop 	hl
+		ld 		a,(hl)
+		add 	a,e
+		ld 		(hl),a
+		inc 	hl
+		ld 		a,(hl)
+		adc 	a,d
+		ld 		(hl),a
+		pop 	de
+; @end
+
+; *********************************************************************************
+
+; @word.ix or!
+		pop 	hl
+		ld 		a,(hl)
+		or 		e
+		ld 		(hl),a
+		inc 	hl
+		ld 		a,(hl)
+		or 		d
+		ld 		(hl),a
+		pop 	de
+; @end
+
+; *********************************************************************************
+
+; @word.ix fill
+
+		pop 	hl 						; top is count (DE) 2nd address (HL) 3rd value (BC)
+		pop 	bc
+		ld 		a,d
+		or 		e
+		jr 		z,__fill2
+
+__fill1:ld 		(hl),c
+		inc 	hl
+		dec 	bc
+		ld 		a,d
+		or 		e
+		jr 		nz,__fill1
+__fill2:
+		pop 	de
+; @end
+
+; *********************************************************************************
+
+; @word.ix move
+		ld 		b,d 								; top is count (BC)
+		ld 		c,e
+		pop 	hl 									; 2nd is target (HL)
+		pop 	de 									; 3rd is source (DE)
+
+		ld 		a,b 								
+		or 		c
+		jr 		z,__move2
+
+		xor 	a 									; find direction. 
+		sbc 	hl,de
+		ld 		a,h
+		add 	hl,de
+		bit 	7,a 								; if +ve use LDDR
+		jr 		z,__move3
+
+		ex 		de,hl 								; LDIR etc do (DE) <- (HL)
+		ldir
+		jr 		__move2
+
+__move3:		
+		add 	hl,bc 								; add length to HL,DE, swap as LDDR does (DE) <- (HL)
+		ex 		de,hl
+		add 	hl,bc
+		dec 	de 									; -1 to point to last byte
+		dec 	hl
+		lddr 
+
+__move2:
+		pop 	de
+; @end
+
+; *********************************************************************************
+
+; @generator.hl p@
+		ld 		b,d
+		ld 		c,e
+		in 		e,(c)
+		ld 		d,0
+; @end
+
+; *********************************************************************************
+
+; @generator.hl p!
+		ld 		b,d
+		ld 		c,e
+		pop 	de
+		out 	(c),e
+		pop 	de
+; @end
