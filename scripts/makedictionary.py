@@ -24,6 +24,6 @@ for line in src:
 	wName = "".join([chr(int(x,16)) for x in wName.split("_")])
 	address = int(m.group(3),16)
 	#print(wName,wType,address)
-	image.addDictionary(wName,image.currentCodePage(),address,wType == "macro")
+	image.addDictionary(wName,image.getCodePage(),address,wType == "macro")
 
 image.save()

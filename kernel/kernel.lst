@@ -1,6 +1,6 @@
               	; --------------------------------------
               	; zasm: assemble "kernel.asm"
-              	; date: 2018-11-16 23:15:44
+              	; date: 2018-11-17 10:48:52
               	; --------------------------------------
 
 
@@ -22,13 +22,13 @@
               	
 8000:         				org 	$8000
 8000: 1804    				jr 		Boot
-8002: FFFF    				org 	$8004
+8002: FFFF    				org 	$8004							; pointer to SysInfo at $8004
 8004: 1489    				dw 		SystemInformationTable
               				
 8006: ED7B2889	Boot:		ld 		sp,(SIStack)					; reset Z80 Stack
-800A: F3      				di										; enable interrupts
+800A: F3      				di										; disable interrupts
               	
-800B: ED910702				db 		$ED,$91,7,2						; set turbo port (7) to 2 (14Mhz)
+800B: ED910702				db 		$ED,$91,7,2						; set turbo port (7) to 2 (14Mhz speed)
               	
 800F: CD3A82  				call 	GFXInitialise48k 				; initialise and clear screen.
 8012: CD4281  				call 	GFXConfigure
@@ -2012,7 +2012,6 @@ A000:         	FreeMemory:
 A000: FFFFFFFF				org 	$C000
 A004: FF...   	
 C000: 00      				db 		0 								; start of dictionary, which is empty.
-              	
 
 
 ; +++ segments +++
@@ -2215,5 +2214,5 @@ macro__cforth_70_40       = $852F = 34095          __words.asm:405 (unused)
 macro__cforth_73_77_61_70 = $8582 = 34178          __words.asm:519 (unused)
 
 
-total time: 0.0069 sec.
+total time: 0.0070 sec.
 no errors

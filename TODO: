@@ -1,9 +1,5 @@
 TODO:
 
-- Instantiate initial dictionary from image contents
-
-- Find routines for words
-
 - Write compiler code  
 
 - Write basic support code for debugging, displaying on bottom ?
@@ -49,3 +45,4 @@ Compilation: load thru exit copy
 		push 	bc 				; get ready to return there
 		exx 					; switch back 
 		ret
+

@@ -14,28 +14,31 @@ class ColorForthImage(object):
 		self.fileName = fileName
 		h = open(fileName,"rb")
 		self.image = [x for x in h.read(-1)]
+		h.close()
 		self.sysInfo = self.read(0,0x8004)+self.read(0,0x8005)*256
 		self.pageTable = self.read(0,self.sysInfo+16)+self.read(0,self.sysInfo+17)*256
 		self.forthDictionary = {}
 		self.macroDictionary = {}
 		self.loadDictionary()
-		h.close()
+		self.currentPage = 	self.read(0,self.sysInfo+4)
+		self.currentAddress = self.read(0,self.sysInfo+0)+self.read(0,self.sysInfo+1)*256
 	#
 	#		Return sys.info address
 	#
 	def getSysInfo(self):
 		return self.sysInfo 
-
 	#
 	#		Return dictionary page
 	#
 	def dictionaryPage(self):
 		return 0x20
 	#
-	#		Return page with code in.
+	#		Return current page and address for next free code.
 	#
-	def currentCodePage(self):
-		return self.read(0,self.sysInfo+4)
+	def getCodePage(self):
+		return self.currentPage
+	def getCodeAddress(self):
+		return self.currentAddress
 	#
 	#		Convert a page/z80 address to an address in the image
 	#
@@ -70,6 +73,13 @@ class ColorForthImage(object):
 		while len(self.image) <= required:
 			self.image.append(0x00)
 	#
+	#		Set boot address
+	#
+	def setBootAddress(self,page,address):
+		self.write(self.getSysInfo()+8,address & 0xFF)
+		self.write(self.getSysInfo()+9,address >> 8)
+		self.write(self.getSysInfo()+12,page)
+	#
 	#		Add entry to image dictionary (if not private) and local copy
 	#
 	def addDictionary(self,name,page,address,isMacroEntry):
@@ -78,7 +88,7 @@ class ColorForthImage(object):
 			self.addImageDictionary(name,page,address,isMacroEntry)
 		addDict = self.macroDictionary if isMacroEntry else self.forthDictionary
 		assert name not in addDict,"Duplicate entry "+name
-		addDict[name] = [ name,page,address ]
+		addDict[name] = [ name,page,address,isMacroEntry ]
 	#
 	#		Add a physical entry to the image dictionary
 	#
@@ -113,10 +123,13 @@ class ColorForthImage(object):
 		self.forthDictionary = self.privateRemove(self.forthDictionary)
 		self.macroDictionary = self.privateRemove(self.macroDictionary)
 	#
+	#		Remove private entries from a dictionary.
+	#
 	def privateRemove(self,dict):
 		keys = [x for x in dict.keys() if x[0] == "_"]
 		for k in keys:
 			del dict[keys]
+		return dict
 	#
 	#		Load the dictionary in from the image.
 	#
@@ -132,6 +145,13 @@ class ColorForthImage(object):
 			target[name] = [name,self.read(dPage,p+1),self.read(dPage,p+2)+self.read(dPage,p+3)*256]
 			#print(p,name,target[name])
 			p = p + self.read(dPage,p)
+	#
+	#		Find a dictionary entry. Returns [name,page,address,macro?] or None
+	#
+	def findWord(self,word,isMacro):
+		source = self.macroDictionary if isMacro else self.forthDictionary
+		word = word.strip().lower()
+		return source[word] if word in source else None
 	#
 	#		Allocate page of memory to a specific purpose.
 	#
@@ -149,6 +169,10 @@ class ColorForthImage(object):
 	#		Write the image file out.
 	#
 	def save(self,fileName = None):
+		self.write(0,self.sysInfo+4,self.currentPage)
+		self.write(0,self.sysInfo+0,self.currentAddress & 0xFF)
+		self.write(0,self.sysInfo+1,self.currentAddress >> 8)
+
 		fileName = self.fileName if fileName is None else fileName
 		h = open(fileName,"wb")
 		h.write(bytes(self.image))		
@@ -159,5 +183,7 @@ if __name__ == "__main__":
 	print(len(z.image))
 	print(z.address(z.dictionaryPage(),0xC000))
 	z.save()
-	print(z.forthDictionary)
-	print(z.macroDictionary)
+	z.removeDictionaryPrivateWords()
+	print(z.findWord("p@",True))
+	print(z.findWord("p@",False))
+	print(z.findWord("p@@",True))
