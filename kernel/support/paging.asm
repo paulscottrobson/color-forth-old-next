@@ -70,7 +70,6 @@ PAGERestore:
 		inc 	a
 		db 		$ED,$92,$57
 		dec 	a
-		ex 		af,af' 								; put page in A'
 		pop 	hl
 		pop 	af
 		ret

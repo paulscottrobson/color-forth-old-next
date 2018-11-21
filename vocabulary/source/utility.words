@@ -3,13 +3,13 @@
 ;
 ;		Name : 		utility.words
 ;		Author :	Paul Robson (paul@robsons.org.uk)
-;		Date : 		16th November 2018
+;		Date : 		21st November 2018
 ;		Purpose :	Miscellaneous words.
 ;
 ; ***************************************************************************************
 ; ***************************************************************************************
 
-; @word.hl 		inkey
+; @forth[hl] inkey
 		push 	de
 		call 	IOScanKeyboard
 		ld 		e,a
@@ -18,7 +18,7 @@
 
 ; ***************************************************************************************
 
-; @word.ret halt
+; @forth[ret] halt
 
 __haltLoop:
 		di
@@ -27,3 +27,24 @@ __haltLoop:
 
 ; @end
 
+; ***************************************************************************************
+
+; @macro[ret] break
+		db 		$DD,$01
+; @endm
+
+; ***************************************************************************************
+
+; @word[hl] c,
+		ld 		a,e
+		call 	FARCompileByte
+		pop 	de
+; @endm
+
+; ***************************************************************************************
+
+; @word[hl] ,
+		ex 		de,hl
+		call 	FARCompileByte
+		pop 	de
+; @endm

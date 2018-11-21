@@ -9,30 +9,18 @@
 ; ***************************************************************************************
 ; ***************************************************************************************
 
-; *********************************************************************************
-
-; @word.ret	 	mode.48
-		push 	de
-		call 	GFXInitialise48k
-		call 	GFXConfigure
+; @word[hl] screenmode
+		ld 		a,e
+		call	GFXMode
 		pop 	de
-; @end	
+; @end
 
-; *********************************************************************************
+; ***************************************************************************************
 
-; @word.ret	 	mode.lowres
-		push 	de
-		call 	GFXInitialiseLowRes
-		call 	GFXConfigure
-		pop 	de
-; @end	
-
-; *********************************************************************************
-
-; @word.ret	 	mode.layer2
-		push 	de
-		call 	GFXInitialiseLayer2
-		call 	GFXConfigure
-		pop 	de
-; @end	
+; @word[ix] screen!
+		ex 		de,hl 							; TOS (address) in HL
+		pop 	de 								; data in DE
+		call 	GFXWriteCharacter 				; display it
+		pop 	de 								; fix up stack
+; @end
 

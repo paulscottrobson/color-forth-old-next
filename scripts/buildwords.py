@@ -10,6 +10,9 @@
 # *********************************************************************************
 
 import os,re
+
+def encrypt(name):
+	return "cforth_"+"_".join(["{0:02x}".format(ord(x)) for x in name])		
 #
 #		Get list of word files.
 #
@@ -21,66 +24,71 @@ fileList.sort()
 #
 #		Now process them
 #
+currentWord = None
 hOut = open("__words.asm","w")
 hOut.write(";\n; Generated.\n;\n")
 for f in fileList:
 	unclosedWord = None
 	for l in [x.rstrip().replace("\t"," ") for x in open(f).readlines()]:
-		#print(l)
 		#
 		#		Look for @<marker>.<wrapper> <word> or @end
 		#
 		if l != "" and l[0] == ";" and l.find("@") >= 0 and l.find("@") < 4:
-			m = re.match("^\;\s+\@([\w\.]+)\s*([\w\;\+\-\*\/\.\<\=\>\@\!]*)\s*(.*)$",l)
-			assert m is not None,l+" syntax ?"
-			marker = m.group(1).lower()
-			word = m.group(2).lower()
-			wrapper = ""
+			hOut.write("\n"+l+"\n\n")
+			sl = l.strip().lower()
 			#
-			#		If it's generator.x word.x work out the wrapper.
+			#		If it's @forth or @macro
 			#
-			if marker != "end":
-				marker = marker.split(".")
-				assert marker[0] == "generator" or marker[0] == "word",l
-				assert marker[1] == "ix" or marker[1] == "hl" or marker[1] == "ret",l
-				wrapper = marker[1]
-				marker = marker[0]
-			#print(marker,word,wrapper)
+			if sl.find("@end") < 0:
+				assert currentWord is None
+				#
+				#	Workout the word, wrapper and forth/macro target
+				#
+				m = re.match("^\;\s+\@(\w+)\[(\w+)\]\s+(.*)$",sl)
+				assert m is not None,sl + "????"
+				currentWord = m.group(3)
+				currentWrapper = m.group(2)
+				currentDirectory = m.group(1)
+				encryptName = encrypt(currentWord)
+				assert currentWrapper == "ix" or currentWrapper == "hl" or currentWrapper == "ret"
+				#
+				#	Start of executable word
+				#
+				hOut.write("{0}_forth:\n".format(encryptName))
+				#
+				#	Stack adjustment encryption
+				#
+				if currentWrapper == "ix" or currentWrapper == "hl":
+					hOut.write("    pop {0}\n".format(currentWrapper))
+				#
+				#	Start of actual code.
+				#
+				hOut.write("{0}_code:\n".format(encryptName))
 			#
-			#		If it isn't end, create an executable with the wrapper
-			#		If it is a generator, mark the area of the data to be copied
-			#
-			if marker != "end":
-				assert unclosedWord is None,"Not closed at "+l
-				unclosedWord = "_cforth_"+("_".join(["{0:02x}".format(ord(x)) for x in word]))
-				unclosedIsGenerator = (marker == "generator")
-				unclosedWrapper = wrapper
-				hOut.write("; =========== {0} {1} {2} ===========\n\n".format(word,marker,wrapper))
-				hOut.write("forth_"+unclosedWord+":\n")
-				if wrapper == "ix" or wrapper == "hl":
-					hOut.write("\tpop {0}\n".format(wrapper))				
-				if marker == "generator":
-					hOut.write("g_"+unclosedWord+":\n")
-			#
-			#		If it is an end, mark the end if it is a generator, then complete
-			# 		the wrapper from the start. Then for generators create a macro word
-			# 		which creates he code to copy the word.
+			#		@end
 			#
 			else:
-				assert unclosedWord is not None
-				if unclosedIsGenerator:
-					hOut.write("e_"+unclosedWord+":\n")
-				if unclosedWrapper == "ret":
-					hOut.write("\tret\n")
-				if unclosedWrapper == "ix" or unclosedWrapper == "hl":
-					hOut.write("\tjp ({0})\n".format(unclosedWrapper))
-
-				if unclosedIsGenerator:
-					hOut.write("\nmacro_"+unclosedWord+":\n")
-					hOut.write("\tld b,e_{0}-g_{0}\n".format(unclosedWord))
-					hOut.write("\tld hl,g_{0}\n".format(unclosedWord))
-					hOut.write("\tjp MacroExpand\n")
-				unclosedWord = None
+				assert currentWord is not None
+				#
+				#	End of actual code
+				#
+				hOut.write("{0}_end:\n".format(encryptName))
+				#
+				#	Exiting code
+				#
+				if currentWrapper == "ix" or currentWrapper == "hl":
+					hOut.write("    jp ({0})\n".format(currentWrapper))
+				else:
+					hOut.write("    ret\n")
+				#
+				#	Macro version.
+				#
+				if currentDirectory == "macro":
+					hOut.write("{0}_macro:\n".format(encryptName))
+					hOut.write("    ld b,{0}_end-{0}_start\n".format(encryptName))
+					hOut.write("    ld hl,{0}_start\n".format(encryptName))
+					hOut.write("    jp MacroExpand\n")
+				currentWord = None
 		else:
 			hOut.write(l+"\n")
 hOut.close()

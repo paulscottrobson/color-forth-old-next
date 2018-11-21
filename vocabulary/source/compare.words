@@ -11,32 +11,17 @@
 
 ; *********************************************************************************
 
-; @word.ix	 	=
-		ex 		de,hl
+; @forth[hl]	 	=
 		pop 	bc
+		ld 		a,b 			; B = B ^ D
+		xor 	d
+		ld 		b,a
+		ld 		a,c 			; A = (B ^ D) | (C ^ E) if BC=DE then Z
+		xor 	e
+		or 		b
 		ld 		de,$0000
-		ld 		a,h
-		cp 		b
-		jr 		nz,__equalFail
-		ld 		a,l
-		cp 		c
-		jr 		nz,__equalFail
+		jr 		nz,__equal1
 		dec 	de
-__equalFail:
+__equal1:
 ; @end	
 
-; *********************************************************************************
-
-; @word.ix	 	<>
-		ex 		de,hl
-		pop 	bc
-		ld 		de,$FFFF
-		ld 		a,h
-		cp 		b
-		jr 		nz,__notEqualExit
-		ld 		a,l
-		cp 		c
-		jr 		nz,__notEqualExit
-		inc 	de
-__notEqualExit:
-; @end	

@@ -3,7 +3,7 @@
 ;
 ;		Name : 		bootloader.asm
 ;		Author :	Paul Robson (paul@robsons.org.uk)
-;		Date : 		16th November 2018
+;		Date : 		20th November 2018
 ;		Purpose :	Boot-Loads code by loading "boot.img" into memory
 ;					from $8000-$BFFF then banks 32-94 (2 per page) into $C000-$FFFF
 ;
@@ -12,16 +12,10 @@
 
 FirstPage = 32 												; these are the pages for an 
 LastPage = 95 												; unexpanded ZXNext.
-
-		org 	$4000-27
-		db 		$3F
-		dw 		0,0,0,0,0,0,0,0,0,0,0
-		org 	$4000-4
-		dw 		$5AFE
-		db 		1
-		db 		7
+	
+		opt 	zxnextreg	
 		org 	$5AFE
-		dw 		$7F00	
+		dw 		$7F00
 		org 	$7F00 							
 
 Start:	ld 		sp,Start-1 									; set up the stack.
@@ -75,9 +69,9 @@ __ReadBlockLoop:
 
 SetPaging:
 		ld 		a,b 										; set $56
-		db 		$ED,$92,$56
+		nextreg $56,a
 		inc 	a 											; set $57
-		db 		$ED,$92,$57
+		nextreg $57,a
 		ret
 
 
@@ -135,13 +129,14 @@ CloseFile:
 		pop 	af
 		ret		
 
+
 DefaultDrive:
 		db 		0
 FileHandle:
 		db 		0
 
+		org 	$7FF0
 ImageName:
 		db 		"boot.img",0
 
-		org 	$FFFF
-		db 		9
+		savesna	"bootloader.sna",Start

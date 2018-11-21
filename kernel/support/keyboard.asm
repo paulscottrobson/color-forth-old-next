@@ -14,7 +14,7 @@
 ;			Scan the keyboard, return currently pressed key code in A
 ;
 ; *********************************************************************************
-		
+	
 IOScanKeyboard:
 		push 	bc
 		push 	de
