@@ -24,5 +24,5 @@ rem
 rem
 rem		Insert vocabulary into the image file.
 rem
-rem if exist boot.img python ..\scripts\makedictionary.py
+if exist boot.img python ..\scripts\makedictionary.py
 rem if exist boot.img copy boot.img ..\files

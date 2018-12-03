@@ -1,0 +1,5 @@
+//
+//		List of words to be imported into the dictionary.			
+//
+FARCompileByteL	 			c,		Forth
+FARCompileWord 				, 		Forth

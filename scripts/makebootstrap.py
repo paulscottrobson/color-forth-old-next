@@ -21,7 +21,6 @@ binary = [x for x in open("code.bin","rb").read(-1)]
 #		Process each one.
 #
 hOut = open("bootstrap.cf","w")
-hOut = sys.stdout
 hOut.write("//\n//    Generated.\n//\n")
 for word in words:
 	name = "".join([chr(int(x,16)) for x in word[6:].split("_")])
