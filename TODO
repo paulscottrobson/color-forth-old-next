@@ -1,9 +1,12 @@
 TODO
+	imagelib can read dictionary contents (for compiler)
 
-	stack dumper word
+	stack dumper word (kernel)
 	
-(check parameters)
-	move
+(check parameters ?)
+	move 
 	fill
+
+(what to do ? Replace with ordinary stack ?)
 	pop ?
 	push ?
