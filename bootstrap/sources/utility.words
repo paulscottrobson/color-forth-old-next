@@ -1,19 +1,28 @@
 // ***************************************************************************************
 // ***************************************************************************************
 //
-//		Name : 		wrapper.asm
+//		Name : 		utility.words
 //		Author :	Paul Robson (paul@robsons.org.uk)
 //		Date : 		3rd December 2018
-//		Purpose :	Wrapper for assembling bootstrap words
+//		Purpose :	Source code for bootstrap ColorFORTH
 //
 // ***************************************************************************************
 // ***************************************************************************************
 
-MULTMultiply16 = $8010 								// HL := HL * DE
-DIVDivideMod16 = $8013 								// DE := DE / HL // HL := DE mod HL
-HereAddr = $8004 									// contains address of HERE
+@macro[ret] 		;s
+		ret
 
-		opt 	zxnextreg
-		org 	0
-		include "_source.asm"
+// ***************************************************************************************
 
+@copies[hl] 		h
+		push 	de
+		ld 		de,(HereAddr)
+
+// ***************************************************************************************
+
+@word[ix] 		here
+		push 	de
+		ld 		hl,(HereAddr)
+		ld 		e,(hl)
+		inc 	hl
+		ld 		d,(hl)

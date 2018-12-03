@@ -1,27 +1,122 @@
-; ***************************************************************************************
-; ***************************************************************************************
-;
-;		Name : 		binary.words
-;		Author :	Paul Robson (paul@robsons.org.uk)
-;		Date : 		3rd December 2018
-;		Purpose :	Source code for bootstrap ColorFORTH
-;
-; ***************************************************************************************
-; ***************************************************************************************
+// ***************************************************************************************
+// ***************************************************************************************
+//
+//		Name : 		binary.words
+//		Author :	Paul Robson (paul@robsons.org.uk)
+//		Date : 		3rd December 2018
+//		Purpose :	Source code for bootstrap ColorFORTH
+//
+// ***************************************************************************************
+// ***************************************************************************************
 
 @word[ix] 		*
 
-		pop 	hl 									; second parameter
-		call	MULTMultiply16						; do arithmetic
-		ex 		de,hl 								; put result in DE
+		pop 	hl 									// second parameter
+		call	MULTMultiply16						// do arithmetic
+		ex 		de,hl 								// put result in DE
 
-; ***************************************************************************************
+// ***************************************************************************************
 
 @copies[ix]		+
 
-		pop 	hl 									; second parameter
-		add 	hl,de 								; do sum
-		ex 		de,hl 								; put result in DE
+		pop 	hl 									// second parameter
+		add 	hl,de 								// do sum
+		ex 		de,hl 								// put result in DE
 
-; ***************************************************************************************
+// ***************************************************************************************
+
+@word[ix] 		/
+
+		pop 	hl 									// second parameter
+		ex 		de,hl
+		call	DIVDivideMod16						// do arithmetic DE := DE/HL
+
+// ***************************************************************************************
+
+@word[ix] 		/mod
+
+		pop 	hl 									// second parameter
+		ex 		de,hl
+		call	DIVDivideMod16						// do arithmetic
+		push 	hl 									// push MOD in HL back on stack, result in DE
+
+// ***************************************************************************************
+
+@word[hl]		and						
 		
+		pop 	bc
+		ld 		a,d
+		and 	b
+		ld 		d,a
+		ld 		a,e
+		and 	c
+		ld 		e,a
+
+// ***************************************************************************************
+
+@word[ix]		less
+
+		pop 	hl 									// want to check HL < DE
+		ld 		a,d 								// sign different ?
+		xor 	h
+		add 	a,a 
+		jr 		c,__LessSignDifferent
+		sbc 	hl,de 								// CS if HL < DE
+		ld 		hl,$0000
+		jr 		c,__LessExit
+		dec 	hl
+		jr 		__LessExit
+
+__LessSignDifferent
+		bit 	7,d 								// if bit 7 clear then HL must be less than DE
+		ld 		hl,$0000
+		jr 		nz,__LessExit
+		dec 	hl
+
+__LessExit:
+
+// ***************************************************************************************
+
+@word[ix] 		mod
+
+		pop 	hl 									// second parameter
+		ex 		de,hl
+		call	DIVDivideMod16						// do arithmetic DE := DE/HL
+		ex 		de,hl
+
+// ***************************************************************************************
+
+@word[hl]		or						
+		
+		pop 	bc
+		ld 		a,d
+		xor 	b
+		ld 		d,a
+		ld 		a,e
+		xor 	c
+		ld 		e,a
+
+// ***************************************************************************************
+
+@word[hl]		+or
+		
+		pop 	bc
+		ld 		a,d
+		or 		b
+		ld 		d,a
+		ld 		a,e
+		or 	 	c
+		ld 		e,a
+
+// ***************************************************************************************
+
+@word[ix]	 	u+
+
+		pop 	bc
+		pop 	hl
+		add 	hl,de
+		push 	bc
+		ex 		de,hl
+
+
+// ***************************************************************************************
