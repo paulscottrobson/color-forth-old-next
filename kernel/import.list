@@ -3,3 +3,4 @@
 //
 FARCompileByteL	 			c,		Forth
 FARCompileWord 				, 		Forth
+DEBUGShowStack 				debug 	Forth

@@ -11,7 +11,7 @@
 
 ; ***************************************************************************************
 ;
-;							Execute system function A
+;							Execute system function A param in B
 ;
 ; ***************************************************************************************
 
@@ -20,7 +20,7 @@ SystemHandler:
 		or 			a
 		ret 		nz
 		ld 			a,l 							
-		cp 			3
+		cp 			5
 		ret 		nc
 
 		push 		hl 								; save HL then DE
@@ -40,6 +40,21 @@ SYSVectorTable:
 		jp 			GFXModeE 						; +0 	set mode to B (e.g. E)
 		jp 			GFXClearScreen 					; +1 	clear screen
 		jp 			SYSGetExtent 					; +2 	extent (width in HL, height in DE)
+		jp 			SYSSetPosition					; +3 	set writing position to B
+		jp 			SYSWriteCharacter 				; +4 	write character and advance.
+
+SYSSetPosition:
+		ld 			(__DIScreenAddress),de
+		ret
+
+SYSWriteCharacter:
+		push 		hl
+		ld 			hl,(__DIScreenAddress)
+		call 		GFXWriteCharacter
+		inc 		hl
+		ld 			(__DIScreenAddress),hl
+		pop 		hl
+		ret
 
 SYSGetExtent:
 		ld 			a,(__DIScreenWidth)

@@ -9,6 +9,8 @@
 # ***************************************************************************************
 # ***************************************************************************************
 
+import sys
+
 class ColorForthImage(object):
 	def __init__(self,fileName = "boot.img"):
 		self.fileName = fileName
@@ -18,6 +20,7 @@ class ColorForthImage(object):
 		self.sysInfo = self.read(0,0x8004)+self.read(0,0x8005)*256
 		self.currentPage = 	self.read(0,self.sysInfo+2)
 		self.currentAddress = self.read(0,self.sysInfo+0)+self.read(0,self.sysInfo+1)*256
+		self.echo = sys.stdout
 	#
 	#		Return sys.info address
 	#
@@ -65,6 +68,21 @@ class ColorForthImage(object):
 		if page >= self.read(0,self.sysInfo+4):
 			self.write(0,self.sysInfo+4,page+1)
 	#
+	#		Compile Byte/Word
+	#
+	def cByte(self,data):
+		self.write(self.currentPage,self.currentAddress,data)
+		if self.echo:
+			print("{0:02x}:{1:02x}  {2:02x}".format(self.currentPage,self.currentAddress,data))
+		self.currentAddress += 1
+	def cWord(self,data):
+		data = data & 0xFFFF
+		self.write(self.currentPage,self.currentAddress,data & 0xFF)
+		self.write(self.currentPage,self.currentAddress+1,data >> 8)
+		if self.echo:
+			print("{0:02x}:{1:02x}  {2:04x}".format(self.currentPage,self.currentAddress,data))
+		self.currentAddress += 2
+	#
 	#		Expand physical size of image to include given address
 	#
 	def expandImage(self,page,address):
@@ -98,6 +116,25 @@ class ColorForthImage(object):
 		while self.read(self.dictionaryPage(),p) != 0:
 			p = p + self.read(self.dictionaryPage(),p)
 		return p
+	#
+	#		Get dictionary
+	#
+	def getDictionary(self):
+		dictionary = {}
+		p = 0xC000
+		dictPage = self.dictionaryPage()
+
+		while self.read(dictPage,p) != 0:
+			page = self.read(dictPage,p+1)
+			addr = self.read(dictPage,p+2) + 256 * self.read(dictPage,p+3)
+			name = ""
+			for i in range(0,self.read(dictPage,p+4) & 0x3F):
+				name = name + chr(self.read(dictPage,p+5+i))
+			dByte = self.read(dictPage,p + 4)
+			secure = "forth" if (dByte & 0x80) == 0 else "macrp"
+			p = p + self.read(dictPage,p)
+			dictionary[name] = { "name":name,"page":page,"address":addr,"subset":secure,"dictaddr":p}
+		return dictionary
 	#
 	#		Write the image file out.
 	#

@@ -58,8 +58,15 @@ __GFXConfigure:
 		ld 		(__DIScreenHeight),a
 		ex 		de,hl 								; save driver
 		ld 		(__DIScreenDriver),hl
+		ld 		l,d 								; make sizes 16 bit in HL/DE
+		ld 		h,0
+		ld 		d,0
+		call 	MULTMultiply16
+		ld 		(__DIScreenSize),hl
+
 		ld 		hl,0 								; set writing address
 		ld 		(__DIScreenAddress),hl
+
 		pop 	hl
 		pop 	de
 		pop 	bc

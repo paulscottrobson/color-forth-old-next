@@ -43,15 +43,22 @@ Boot:	ld 		sp,StackTop							; reset Z80 Stack
 		ld 		a,FirstCodePage 					; get the page to start
 		call 	PAGEInitialise
 
-		db 		$DD,$01
 		ld 		hl,0								; A = 0
 		ld 		de,0 								; B = Mode
 		call 	SystemHandler 						; Switch to that mode.
-		
+
+		ld 		de,32100
+		push 	de
+		ld 		de,2702
+		push 	de
+		ld 		de,-2
+		call 	DEBUGShowStack
+
 w1:		jp 		w1
 
 		include "support/multiply.asm"				; 16 bit multiply
 		include "support/divide.asm"				; 16 bit divide
+		include "support/debug.asm"					; stack display.
 		include "support/farmemory.asm" 			; far memory routines
 		include "support/graphics.asm" 				; common graphics
 		include "support/keyboard.asm"				; keyboard handler

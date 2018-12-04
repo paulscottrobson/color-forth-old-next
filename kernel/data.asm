@@ -42,7 +42,9 @@ __DIScreenDriver:									; Screen Driver
 		dw 		0	
 __DIScreenAddress:									; position on screen
 		dw 		0
-		
+__DIScreenSize:										; characters on screen
+		dw 		0
+				
 ; ***************************************************************************************
 ;
 ;								 Other data and buffers
