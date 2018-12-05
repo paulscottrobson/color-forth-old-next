@@ -37,6 +37,11 @@ class ColorForthImage(object):
 	def dictionaryPage(self):
 		return 0x20
 	#
+	#		Get source page information
+	#
+	def getSourceInformation(self):
+		return [0x22,4]
+	#
 	#		Return current page and address for next free code.
 	#
 	def getCodePage(self):
@@ -67,21 +72,6 @@ class ColorForthImage(object):
 		self.image[self.address(page,address)] = data
 		if page >= self.read(0,self.sysInfo+4):
 			self.write(0,self.sysInfo+4,page+1)
-	#
-	#		Compile Byte/Word
-	#
-	def cByte(self,data):
-		self.write(self.currentPage,self.currentAddress,data)
-		if self.echo:
-			print("{0:02x}:{1:02x}  {2:02x}".format(self.currentPage,self.currentAddress,data))
-		self.currentAddress += 1
-	def cWord(self,data):
-		data = data & 0xFFFF
-		self.write(self.currentPage,self.currentAddress,data & 0xFF)
-		self.write(self.currentPage,self.currentAddress+1,data >> 8)
-		if self.echo:
-			print("{0:02x}:{1:02x}  {2:04x}".format(self.currentPage,self.currentAddress,data))
-		self.currentAddress += 2
 	#
 	#		Expand physical size of image to include given address
 	#
@@ -116,25 +106,6 @@ class ColorForthImage(object):
 		while self.read(self.dictionaryPage(),p) != 0:
 			p = p + self.read(self.dictionaryPage(),p)
 		return p
-	#
-	#		Get dictionary
-	#
-	def getDictionary(self):
-		dictionary = {}
-		p = 0xC000
-		dictPage = self.dictionaryPage()
-
-		while self.read(dictPage,p) != 0:
-			page = self.read(dictPage,p+1)
-			addr = self.read(dictPage,p+2) + 256 * self.read(dictPage,p+3)
-			name = ""
-			for i in range(0,self.read(dictPage,p+4) & 0x3F):
-				name = name + chr(self.read(dictPage,p+5+i))
-			dByte = self.read(dictPage,p + 4)
-			secure = "forth" if (dByte & 0x80) == 0 else "macrp"
-			p = p + self.read(dictPage,p)
-			dictionary[name] = { "name":name,"page":page,"address":addr,"subset":secure,"dictaddr":p}
-		return dictionary
 	#
 	#		Write the image file out.
 	#

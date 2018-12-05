@@ -3,18 +3,15 @@
 //
 //		Name : 		utility.words
 //		Author :	Paul Robson (paul@robsons.org.uk)
-//		Date : 		3rd December 2018
+//		Date : 		5th December 2018
 //		Purpose :	Source code for bootstrap ColorFORTH
 //
 // ***************************************************************************************
 // ***************************************************************************************
 
-@macro[ret] 		;s
-		ret
-
 // ***************************************************************************************
 
-@copies[hl] 		h
+@copies[] 		h
 		push 	de
 		ld 		de,(HereAddr)
 

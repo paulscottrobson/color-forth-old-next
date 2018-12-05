@@ -14,7 +14,6 @@ DEBUGShowStack:
 		push 	de 									; stack is now non-cached.
 		push	ix 
 
-
 		ld 		hl,(__DIScreenSize) 				; calculate 32 off bottom of screen
 		ld 		de,-32
 		add 	hl,de

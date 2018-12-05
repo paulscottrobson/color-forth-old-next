@@ -31,7 +31,7 @@ currentWord = None
 for w in source:
 	#print(w)
 	if w[0] == "@":
-		m = re.match("^\@(\w+)\[([a-z]+)\]\s*(.*)$",w)
+		m = re.match("^\@(\w+)\[([a-z]*)\]\s*(.*)$",w)
 		assert m is not None,w
 		wType = m.group(1)
 		wrapper = m.group(2)

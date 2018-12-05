@@ -1,6 +1,6 @@
 //
 //		List of words to be imported into the dictionary.			
 //
-FARCompileByteL	 			c,		Forth
+FARCompileByte	 			c,		Forth
 FARCompileWord 				, 		Forth
 DEBUGShowStack 				debug 	Forth

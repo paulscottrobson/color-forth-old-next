@@ -3,7 +3,7 @@
 //
 //		Name : 		binary.words
 //		Author :	Paul Robson (paul@robsons.org.uk)
-//		Date : 		3rd December 2018
+//		Date : 		5th December 2018
 //		Purpose :	Source code for bootstrap ColorFORTH
 //
 // ***************************************************************************************
@@ -17,7 +17,7 @@
 
 // ***************************************************************************************
 
-@copies[ix]		+
+@copies[]		+
 
 		pop 	hl 									// second parameter
 		add 	hl,de 								// do sum

@@ -10,7 +10,7 @@
 // ***************************************************************************************
 
 MULTMultiply16 = $8010 								// HL := HL * DE
-DIVDivideMod16 = $8013 								// DE := DE / HL // HL := DE mod HL
+DIVDivideMod16 = $8014 								// DE := DE / HL // HL := DE mod HL
 HereAddr = $8004 									// contains address of HERE
 
 		opt 	zxnextreg

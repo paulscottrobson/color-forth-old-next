@@ -15,14 +15,18 @@
 ;		in data.asm
 ;													
 DictionaryPage = $20 								; dictionary page
-FirstCodePage = $22 								; first code page.
-								
+
+FirstSourcePage = $22 								; first code page.							
+SourcePageCount = 4 								; 4 pages, 512 bytes per page = 128 pages of code max.
+EditPageSize = 512 									; bytes per edit page.
+
+FirstCodePage = FirstSourcePage+SourcePageCount*2	; first page containing code.
+
 ;
 ;		Memory allocated from the Unused space in $4000-$7FFF
 ;
 EditBuffer = $7B08 									; $7B00-$7D1F 512 byte edit buffer
 StackTop = $7EFC 									;      -$7EFC Top of stack
-EditPageSize = 512 									; bytes per edit page.
 
 		opt 	zxnextreg
 		org 	$8000 								; $8000 boot.
@@ -33,7 +37,8 @@ EditPageSize = 512 									; bytes per edit page.
 		jp	 	SystemHandler
 		org 	$8010
 		jp 		MULTMultiply16						; $8010 Multiply
-		jp 		DIVDivideMod16 						; $8013 Divide
+		org 	$8014		
+		jp 		DIVDivideMod16 						; $8014 Divide
 
 		org 	$8020
 Boot:	ld 		sp,StackTop							; reset Z80 Stack
@@ -53,7 +58,7 @@ Boot:	ld 		sp,StackTop							; reset Z80 Stack
 		push 	de
 		ld 		de,-2
 		call 	DEBUGShowStack
-
+		call 	BUFFScan
 w1:		jp 		w1
 
 		include "support/multiply.asm"				; 16 bit multiply
@@ -68,7 +73,9 @@ w1:		jp 		w1
 		include "support/screen_lores.asm"
 		include "support/system.asm"				; system handler
 
+		include "compiler/constant.asm" 			; ASCII -> Int
+		include "compiler/buffer.asm" 				; Buffer scanner.
+
 AlternateFont:										; nicer font
 		include "font.inc" 							; can be $3D00 here to save memory
 		include "data.asm"		
-

@@ -15,8 +15,13 @@
 ;
 ; ***********************************************************************************************
 
-FARCompileByteL:
-		ld 		a,l
+FARCompileByte:
+		pop 	hl 									; return address
+		ld 		a,e 								; compile the LSB of E
+		call 	FARCompileByteA
+		pop 	de 									; fix up stack top
+		jp 		(hl) 								; return
+
 FARCompileByteA:
 		push 	af 									; save byte and HL
 		push 	hl
@@ -40,6 +45,13 @@ FARCompileByteA:
 ; ***********************************************************************************************
 
 FARCompileWord:
+		pop 	ix 									; return address
+		ex 		de,hl 								; compile TOS
+		call 	FARCompileWordHL
+		pop 	de 									; new TOS
+		jp 		(ix) 								; return
+
+FARCompileWordHL:
 		push 	af 									; save byte and HL
 		push 	de
 		push 	hl

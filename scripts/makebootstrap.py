@@ -29,11 +29,17 @@ for word in words:
 	codeEnd = labels[word.replace("start","end")]
 	code = binary[codeBegin:codeEnd]
 	wrappedCode = [x for x in code]
-	# TODO : Wrap binary.
+
 	if parts[1] == "w":
+		assert parts[2] == "ix" or parts[2] == "hl" or parts[2] == "ret"
+		if parts[2] == "ret":
+			wrappedCode.append(201)
+		if parts[2] == "hl":
+			wrappedCode.append()
 		codeGen = " ".join(["[{0}] [c,]".format(n) for n in wrappedCode])
 		hOut.write("[forth] :{0} {1}\n".format(parts[0],codeGen))
 	if parts[1] == "m" or parts[1] == "c":
+		assert parts[2] == ""
 		codeGen = " ".join(["{0} c,".format(x) for x in code])
 		hOut.write("[macro] :{0} {1} [201] [c,]\n".format(parts[0],codeGen))
 	if parts[1] == "c":
