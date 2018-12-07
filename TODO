@@ -3,14 +3,7 @@ TODO
 	buffer scanner	
 	basic compiler
 
-	(no pun intended)
+Resets:
+	SP (no)
+	SpareStackPointer (yes)
 	
-(check parameters ?)
-	move 
-	fill
-
-(what to do ? Replace with ordinary stack ?)
-	pop ?
-	push ?
-
-	stack dumper word (kernel) - empty stack ?
