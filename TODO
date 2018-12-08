@@ -1,9 +1,9 @@
 TODO
 
-	buffer scanner	
 	basic compiler
 
-Resets:
-	SP (no)
+Resets (on error ?)
+	SP (yes)
 	SpareStackPointer (yes)
 	
+Warm start (normal)

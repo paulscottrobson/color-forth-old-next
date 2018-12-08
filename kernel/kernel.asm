@@ -43,6 +43,10 @@ Boot:	ld 		sp,StackTop							; reset Z80 Stack
 		call 	GFXMode
 		jp 		BUFFScan 							; scan the buffers
 
+ErrorHandler:
+		jr 		ErrorHandler
+
+		include "support/debug.asm"					; display stack on bottom line.		
 		include "support/multiply.asm" 				; 16 bit multiply (not used in kernel)
 		include "support/divide.asm" 				; 16 bit divide (not used in kernel)
 		include "support/farmemory.asm" 			; far memory routines

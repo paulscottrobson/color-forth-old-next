@@ -65,7 +65,7 @@ __BUFFNextPage:
 		cp 		FirstSourcePage+SourcePageCount 	; have we finished ?
 		jr 		nz,__BUFFScanSourcePage
 
-		pop 	de 									; stack is now uncached with TOS in DE.
-		
+													; finished, the stack is not cached in DE at this point.
+															
 w1: 	jr 		w1
 

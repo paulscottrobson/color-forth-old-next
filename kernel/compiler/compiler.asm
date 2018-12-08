@@ -19,31 +19,32 @@ COMCompileWordList:
 		pop 	ix 									; IX is now the return address.
 		push 	de 									; decache the stack, DE is no longer cached.
 
-		push 	af 									; push the other registers on the stack. The data stack
-		push 	bc 									; is 8 up after this.
-		push 	hl
-		push 	ix 									; put the return address in DE
-
+		push 	ix 									; save the return address temporarily
 		ld 		ix,(__COMPStackPointer) 			; advance the stack frame forward.
 		ld 		de,CompilerStackSize
 		add 	ix,de
 		ld 		(__COMPStackPointer),ix 			; set it back.
+		pop 	de 									; return address in DE.
+
+		ld 		(ix+0),e 							; save return address in +0,+1
+		ld 		(ix+1),d 
+		ld 		(ix+2),l 							; save HL in IX+2,IX+3
+		ld 		(ix+3),h
 
 		ld 		hl,$0000 							; retrieve the stack pointer.
 		add 	hl,sp
-		ld 		(ix+0),l 							; save in offset 0/1.
-		ld 		(ix+1),h
+		ld 		(ix+4),l 							; save in offset 4/5
+		ld 		(ix+5),h
 
 		push 	ix 									; calculate temporary stack position.
 		pop 	hl
 		ld 		de,CompilerStackSize-2 				; which is at the end of this frame.
 		add 	hl,de
 		ld 		sp,hl 								; and put in SP.
-		ld 		(ix+2),l 							; save this so you can reload it if required
-		ld 		(ix+3),h
+		ld 		(ix+6),l 							; save this so you can reload it if required
+		ld 		(ix+7),h
 
 __COMWLoop:
-		db 		$DD,$01
 		ld 		a,(bc) 								; reached the end ?
 		cp 		$80
 		jr 		z,__COMWExit
@@ -71,20 +72,31 @@ __COMWNext: 										; advance to next tag.
 		jr 		__COMWLoop 							; go do that.
 
 __COMWExit:
-		ld 		ix,(__COMPStackPointer)				; retrieve the old SP value
-		ld 		l,(ix+0)
-		ld 		h,(ix+1)
-		ld 		sp,hl 								; put in stack pointer
-
+		ld 		ix,(__COMPStackPointer)				; unwind the return stack.
 		ld 		de,-CompilerStackSize 				; put the stack frame backword
-		add 	ix,de
+		add 	ix,de 								; hence all the (+stacksize below ....)
 		ld 		(__COMPStackPointer),ix
 
-		pop 	ix 									; restore registers, return is now in IX
-		pop 	hl
-		pop 	bc
-		pop 	af
+		ld 		l,(ix+4+CompilerStackSize) 			; original stack in SP
+		ld 		h,(ix+5+CompilerStackSize)
+		ld 		sp,hl 								; put that in SP.
+
+		ld 		l,(ix+2+CompilerStackSize) 			; reload HL from IX
+		ld 		h,(ix+3+CompilerStackSize)
+
+		ld 		e,(ix+0+CompilerStackSize)			; return address in DE
+		ld 		d,(ix+1+CompilerStackSize)
+
+		ld 		ix,$0000 							; put the return address in IX
+		add 	ix,de
+
 		pop 	de 									; the stack is now cached again
 		jp 		(ix) 								; and return via IX.
+;
+;		Jump here on error.
+;
+COMError:
+		push 	bc
+		pop 	hl
+		jp 		ErrorHandler
 
-		ret

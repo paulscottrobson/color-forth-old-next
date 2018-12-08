@@ -267,12 +267,12 @@ start_62_73_77_61_70_2e_66:
   ld   l,a
  jp (ix)
 
-; =========== debug word.hl ===========
+; =========== debug word.ix ===========
 
 start_64_65_62_75_67_2e_66:
- pop hl
-
- jp (hl)
+ pop ix
+  call  DEBUGShow
+ jp (ix)
 
 ; =========== digit word.hl ===========
 
@@ -341,6 +341,16 @@ start_68_2e_66:
   ld   de,Here
  jp (hl)
 
+; =========== halt word.ix ===========
+
+start_68_61_6c_74_2e_66:
+ pop ix
+__haltz80:
+  di
+  halt
+  jr   __haltz80
+ jp (ix)
+
 ; =========== here word.hl ===========
 
 start_68_65_72_65_2e_66:
@@ -348,6 +358,16 @@ start_68_65_72_65_2e_66:
   push  de          ; contents of here
   ld   de,(Here)
  jp (hl)
+
+; =========== hex! word.ix ===========
+
+start_68_65_78_21_2e_66:
+ pop ix
+  pop  hl          ; HL = word, DE = pos
+  ex   de,hl         ; right way round (!)
+  call  GFXWriteHexWord      ; write out the word
+  pop  de          ; fix up stack.
+ jp (ix)
 
 ; =========== macro word.ret ===========
 

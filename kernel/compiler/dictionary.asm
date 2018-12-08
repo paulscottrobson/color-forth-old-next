@@ -122,7 +122,7 @@ __DICTFindMainLoop:
 		push 	ix 								; save pointers on stack.
 		push 	hl 
 
-		ld 		a,(hl)							; get tag length
+		ld 		a,(ix+4)						; get the word length to test into B
 		and 	$1F
 		ld 		b,a 							; into B
 		inc 	hl 								; skip over tag byte
