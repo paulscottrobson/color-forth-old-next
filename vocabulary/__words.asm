@@ -274,13 +274,6 @@ start_64_65_62_75_67_2e_66:
   call  DEBUGShow
  jp (ix)
 
-; =========== digit word.hl ===========
-
-start_64_69_67_69_74_2e_66:
- pop hl
-
- jp (hl)
-
 ; =========== drop both ===========
 
 start_64_72_6f_70_2e_6d:

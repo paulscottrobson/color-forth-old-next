@@ -16,9 +16,9 @@
 ; ***************************************************************************************
 
 COMUCompileConstant:
-		ld 		a,$EB 								; EX DE,HL
+		ld 		a,$D5 								; PUSH DE
 		call 	FARCompileByte
-		ld 		a,$21								; LD HL,xxxx
+		ld 		a,$11								; LD DE,xxxx
 		call 	FARCompileByte
 		call 	FARCompileWord						; compile constant
 		ret
@@ -41,3 +41,4 @@ __COMUCopyLoop:
 		dec 	l 									; do E bytes
 		jr 		nz,__COMUCopyLoop
 		ret
+

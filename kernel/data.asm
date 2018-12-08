@@ -69,6 +69,13 @@ __BUFFPage:											; current buffer page being scanned.
 __COMPStackPointer: 								; when advanced, will be next stack entry.
 		dw 		CompilerStack-CompilerStackSize
 
+__COMPCurrentDef: 									; points to head (e.g. POP HL) of current definition	
+		dw 		0  									; set to zero when definition has been closed by ;s
+
+__COMPCurrentExit:									; points to tail (e.g. JP $0000) of current definition
+		dw 		0 									; set to zero by red word ; if 0 when ;s is called creates
+													; postfix else jump to that postfix.
+
 __DICTSelector: 									; updating FORTH ($00) MACRO ($80)
 		db 		0
 

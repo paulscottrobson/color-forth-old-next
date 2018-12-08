@@ -1,9 +1,15 @@
-TODO
-
-	basic compiler
-
+TODO:
+	red
+	;s code
+	
 Resets (on error ?)
 	SP (yes)
 	SpareStackPointer (yes)
-	
+	PageStack (yes)
+	CurrentDef (yes)
+
 Warm start (normal)
+	SP (no)
+	SpareStackPointer (yes)
+	PageStack (yes)
+	CurrentDef (yes)
