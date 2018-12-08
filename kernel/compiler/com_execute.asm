@@ -1,0 +1,3 @@
+
+COMXExecuteYellowWord:
+	ret

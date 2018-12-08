@@ -22,6 +22,8 @@ FirstCodePage = $22+SourcePageCount*2 				; first code page.
 ;		Memory allocated from the Unused space in $4000-$7FFF
 ;
 EditBuffer = $7B08 									; $7B00-$7D1F 512 byte edit buffer
+CompilerStack = $7D20 								; $7D20-$7DBF Compiler internal stack
+CompilerStackSize = $40
 StackTop = $7EFC 									;      -$7EFC Top of stack
 
 		opt 	zxnextreg
@@ -52,11 +54,13 @@ Boot:	ld 		sp,StackTop							; reset Z80 Stack
 		include "support/screen_lores.asm"
 
 		include "compiler/buffer.asm" 				; buffer code.
-		include "compiler/utility.asm"				; utility functions.
 		include "compiler/constant.asm"				; ASCII -> Integer conversion
 		include "compiler/dictionary.asm" 			; Dictionary workers
 		include "compiler/compiler.asm"				; compiler
-		
+		include "compiler/com_compile.asm"			; compiler sub-parts
+		include "compiler/com_define.asm"		
+		include "compiler/com_execute.asm"		
+		include "compiler/utility.asm"				; utility functions.
 		include "temp/__words.asm"					; vocabulary file.
 		
 AlternateFont:										; nicer font

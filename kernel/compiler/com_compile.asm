@@ -1,0 +1,5 @@
+COMCCompileGreenWord:
+	ret
+
+COMCCompileCyanWord:
+	ret

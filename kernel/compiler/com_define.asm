@@ -1,0 +1,5 @@
+COMDCompileRedWord:
+	ret
+
+COMDCompileMagentaWord:
+	ret

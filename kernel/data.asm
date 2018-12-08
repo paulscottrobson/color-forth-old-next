@@ -63,6 +63,12 @@ __SPAREStackPointer: 								; working stack so we sort of do push and pop.
 __SPAREStack:
 		ds 		32
 
+__BUFFPage:											; current buffer page being scanned.
+		db 		0
+		
+__COMPStackPointer: 								; when advanced, will be next stack entry.
+		dw 		CompilerStack-CompilerStackSize
+
 __DICTSelector: 									; updating FORTH ($00) MACRO ($80)
 		db 		0
 
