@@ -17,10 +17,6 @@
 
 BUFFScan:
 		ld 		sp,StackTop 						; reset the stack top.
-		ld 		de,$2345 							; push a zero on it. The stack is now DeCached.
-		push 	de
-		ld 		de,$1ABC
-		push 	de
 
 		ld 		a,FirstSourcePage 					; set the first source page.
 		ld 		(__BUFFPage),a

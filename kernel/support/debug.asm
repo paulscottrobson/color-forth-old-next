@@ -14,6 +14,7 @@ DEBUGShow:
 		push 	de 									; stack is now decached
 		push 	bc 									; the stack is now [data stack] [return address]
 		push	ix 									; now [data stack] [return address] [ix]
+
 		ld 		hl,$0000 							; get SP value
 		add 	hl,sp
 		ld 		de,StackTop 	
@@ -43,8 +44,10 @@ __DEBUGShowClear:
 		ld 		c,32 								; C is the ramining characters
 													; IX points to the bottom stack element.
 
-		bit 	7,b 								; exit on underflow
-		jr 		nz,__DEBUGShowExit															
+		ld 		a,b 								; exit on underflow or empty
+		or 		a
+		jr 		z,__DEBUGShowExit															
+		jp 		m,__DEBUGShowExit
 
 __DEBUGShowLoop:
 		dec 	ix 									; read next value
