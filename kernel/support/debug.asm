@@ -24,9 +24,10 @@ DEBUGShow:
 		rr 		l 									; divide by 2 as 2 bytes per stack element.
 		dec 	l 									; subtract two for the return address and IX
 		dec 	l
+		dec 	l 									; one for the initial PUSH DE ; means ld sp,top == empty
 
 		ld 		b,l 								; put count in B
-		ld 		ix,StackTop  						; TOS in IX
+		ld 		ix,StackTop-2  						; TOS in IX
 
 		push 	bc 									; clear the bottom 32 characters
 		ld 		hl,(__DIScreenSize) 				

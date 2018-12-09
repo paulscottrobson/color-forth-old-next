@@ -17,6 +17,8 @@
 
 BUFFScan:
 		ld 		sp,StackTop 						; reset the stack top.
+		ld 		de,$0000 							; decached stack.
+		push 	de
 
 		ld 		a,FirstSourcePage 					; set the first source page.
 		ld 		(__BUFFPage),a
@@ -63,5 +65,5 @@ __BUFFNextPage:
 
 													; finished, the stack is not cached in DE at this point.
 															
-w1: 	jr 		w1
-
+		pop 	de 									; now the stack is cached
+		jp 		CommandLineStart 					; so run the command line with this status.														

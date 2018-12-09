@@ -76,6 +76,13 @@ __COMPCurrentExit:									; points to tail (e.g. JP $0000) of current definitio
 		dw 		0 									; set to zero by red word ; if 0 when ;s is called creates
 													; postfix else jump to that postfix.
 
+__CLICurrentKey: 									; current inkey state on CLI
+		db 		0
+
+		db 		$86 								; buffer for executing, tags it yellow effectively.
+__CLIBuffer:
+		ds 		20
+
 __DICTSelector: 									; updating FORTH ($00) MACRO ($80)
 		db 		0
 

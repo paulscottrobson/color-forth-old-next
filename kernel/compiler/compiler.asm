@@ -98,5 +98,6 @@ __COMWExit:
 COMError:
 		push 	bc
 		pop 	hl
+		inc 	hl
 		jp 		ErrorHandler
 

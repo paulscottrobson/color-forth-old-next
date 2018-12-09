@@ -113,6 +113,7 @@ start_2d_2e_66:
 start_2f_2e_66:
  pop ix
   pop  hl
+  ex   de,hl
   call  DIVDivideMod16
  jp (ix)
 
@@ -121,6 +122,7 @@ start_2f_2e_66:
 start_2f_6d_6f_64_2e_66:
  pop ix
   pop  hl
+  ex   de,hl
   call  DIVDivideMod16
   push  hl
  jp (ix)
@@ -377,6 +379,7 @@ start_6d_61_63_72_6f_2e_66:
 start_6d_6f_64_2e_66:
  pop ix
   pop  hl
+  ex   de,hl
   call  DIVDivideMod16
   ex   de,hl
  jp (ix)

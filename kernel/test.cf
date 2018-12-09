@@ -1,7 +1,8 @@
 :n1 42 ;s ;s ;s ;s
 :n2 44 ;s
              
-:test break 1 n1 n2 debug halt ;s
+:test 1 n1 n2 debug halt ;s
 
-[n1] [n2] [test]
+// [42] [2] [*] [debug] [halt]
+
 

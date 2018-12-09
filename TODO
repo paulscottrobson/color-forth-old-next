@@ -1,16 +1,7 @@
 TODO:
-	red
-	;s code
+	Systematic word test 
+	add 'C' to clear stack.
+	add I/O commands
+	add words from ColorForth I/O, Empty/Mark w/crunch etc. check lists.
 	
-Resets (on error or 'C')
-	SP (yes)
-	SpareStackPointer (yes)
-	PageStack (yes)
-	CurrentDef (yes)
-
-Warm start (normal)
-	SP (no)
-	SpareStackPointer (yes)
-	PageStack (yes)
-	CurrentDef (yes)
 

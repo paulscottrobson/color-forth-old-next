@@ -27,12 +27,14 @@
 
 @word.ix /
 		pop 	hl
+		ex 		de,hl
 		call 	DIVDivideMod16
 
 // ==================================================================================================================
 
 @word.ix /mod
 		pop 	hl
+		ex 		de,hl
 		call 	DIVDivideMod16
 		push 	hl
 
@@ -51,6 +53,7 @@
 
 @word.ix mod
 		pop 	hl
+		ex 		de,hl
 		call 	DIVDivideMod16
 		ex 		de,hl
 
