@@ -1,0 +1,68 @@
+SCPL
+====
+
+All values are 16 bits even if they might write 16 bit :)
+
+Terms (all numbers are treated as 16 bit unsigned integers)
+===========================================================
+[-]Decimal Constant
+$<hexadecimal constant>
+"<string constant>" (ASCIIZ)
+'c'	(character constant)
+@identifier (address constant)
+identifier (variable)
+identifier (constant)
+
+Expression (calculate using BC,HL)
+==================================
+Sequence of alternating terms and operators.
++ - * / % 
+& | ^
+! ?
+< = > #
+No precedence.
+Addresses are all byte addresses.
+
+L-Expression (value stored in DE if not constant)
+=================================================
+!?<term>				[byte/word write]
+&<constant term> 		[port write]
+<identifier>!?<term> 	[byte/word write]
+<identifier> 			[variable write]
+
+Statements
+==========
+<L-Expression> = <expression> ;
+{ statement ; statement ; statement }
+
+while (<expression>) statement ;
+if (<expression>) statement ;
+for (<expression>) statement index local (defined if not present) counts down from <expression-1> to 0.
+
+call <term>(<expr>,<expr>,<expr>...) exprs are stored in corresponding locals in parameters.
+
+call <term>.<identifier>(e1,e2) is syntactic sugar for call <type>_<term>(<identifier>,e1,e2)
+e.g. call s1.move(100,10) => sprite_move(s1,100,10) if s1 is defined as global s1[32] is sprite it's a faux OOP.
+though the 32 (memory allocated) should be a constant really.
+
+local <identifier> [is <type>]
+local <identifier>[<sane constant term>] [is <type>]
+global <identifier> [is <type>]
+global <identifier>[<sane constant term>] [is <type>]
+const <identifier> = <constant term> ;
+proc <identifier>(p1,p2,p3>) statement ; <identifier> 
+
+
+$8000: Main vector
+$8002: Free Variable space pointer
+$8004: Next free page pointer.
+$8006: Address of library vectors.
+$8xxx  library vectors added in ending in $0000 which are chains see below.
+$8xxx  Library code
+$8xxx  Variable storage
+
+(Generated code)
+
+A script takes the assembly files, looks for keywords, concatenates them bungs the header and variable space footer on
+
+Library vectors <hi><lo><len><name> ends with <hi> = 0 all in $8000-$BFFF
