@@ -2,7 +2,7 @@ TODO:
 	red
 	;s code
 	
-Resets (on error ?)
+Resets (on error or 'C')
 	SP (yes)
 	SpareStackPointer (yes)
 	PageStack (yes)
@@ -13,3 +13,4 @@ Warm start (normal)
 	SpareStackPointer (yes)
 	PageStack (yes)
 	CurrentDef (yes)
+

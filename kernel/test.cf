@@ -1,3 +1,7 @@
-1 ::a 2	a
-[1-] @ 42 31 and {@} [halt] 
+:n1 42 ;s ;s ;s ;s
+:n2 44 ;s
+             
+:test break 1 n1 n2 debug halt ;s
+
+[n1] [n2] [test]
 

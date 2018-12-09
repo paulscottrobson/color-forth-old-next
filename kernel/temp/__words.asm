@@ -166,14 +166,10 @@ start_32_2f_2e_66:
   rr   e
  jp (ix)
 
-; =========== ;s macro ===========
+; =========== ;s execute ===========
 
 start_3b_73_2e_6d:
- ld a,end_3b_73_2e_6d-start_3b_73_2e_6d-5
- call COMUCopyCode
-
-end_3b_73_2e_6d:
-
+  jp   COMDExitRoutine
 ; =========== @ both ===========
 
 start_40_2e_6d:
@@ -249,6 +245,14 @@ start_62_40_2e_66:
   ld   e,a
   ld   d,$00
  jp (ix)
+
+; =========== break macro ===========
+
+start_62_72_65_61_6b_2e_6d:
+ ld a,end_62_72_65_61_6b_2e_6d-start_62_72_65_61_6b_2e_6d-5
+ call COMUCopyCode
+  db   $DD,$01
+end_62_72_65_61_6b_2e_6d:
 
 ; =========== bswap both ===========
 

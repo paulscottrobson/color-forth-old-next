@@ -34,7 +34,7 @@ for w in source:
 	if w[0] == "@":
 		parts = w.split(" ")
 		assert parts[-1] not in words,"Duplicate "+w
-		assert parts[0] == "@word.hl" or parts[0] == "@word.ix" or parts[0] == "@word.ret" or parts[0] == "@macro" or parts[0] == "@both",w
+		assert parts[0] == "@word.hl" or parts[0] == "@word.ix" or parts[0] == "@word.ret" or parts[0] == "@macro" or parts[0] == "@both" or parts[0] == "@execute",w
 		currentWord = parts[-1]
 		words[currentWord] = { "type":parts[0][1:],"code":[] }
 
@@ -63,6 +63,10 @@ for w in keys:
 		hOut.write("\n".join(words[w]["code"])+"\n")
 		hOut.write("end_"+scrambledMacro+":\n\n")
 
+	if words[w]["type"] == "execute":
+		hOut.write("start_"+scrambledMacro+":\n")
+		hOut.write("\n".join(words[w]["code"])+"\n")
+		
 	if words[w]["type"] == "both" or words[w]["type"][:4] == "word":
 		count += 1
 		wrapper = "ix" if words[w]["type"] == "both" else words[w]["type"][5:]
